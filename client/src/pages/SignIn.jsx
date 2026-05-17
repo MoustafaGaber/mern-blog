@@ -2,12 +2,14 @@ import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import api from "../lib/axios";
+import { useDispatch, useSelector } from "react-redux";
+import { signInStart,signInSuccess,signInFailure } from "../redux/user/userSlice";
 
 const SignIn= () => {
   const [formData, setFormData] = useState({});
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const{ loading, error:errorMessage }= useSelector(state=>state.user)
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     setFormData({...formData, [e.target.id]: e.target.value.trim()})
@@ -16,30 +18,29 @@ const SignIn= () => {
   const handleSubmit=async(e)=>{
     e.preventDefault()
     if ( !formData.email || !formData.password) {
-      return setErrorMessage('Please fill out all fields.');
+      return dispatch(signInFailure('Please fill out all fields.')); 
     }
     try {
-        setLoading(true);
-        setErrorMessage(null);
+       dispatch(signInStart());
         const res=await api.post('/auth/signin', formData)
         
         console.log(res.data);
-        setLoading(false);
-        setFormData({});
+       
+       dispatch(signInSuccess(res.data));
        navigate('/')
     } catch (error) {
-      setLoading(false);
+     
       console.log(error);
       
       if (error.response && error.response.data) {
         // error.response.data.message هي الرسالة اللي جاية من الـ Backend عندك
-        setErrorMessage(error.response.data.message);
+        
+        dispatch(signInFailure(error.response.data.message));
     } else {
         // لو السيرفر قاطع نت أو مش شغال أصلاً ومفيش response راجع
-        setErrorMessage("حدث خطأ في الاتصال بالسيرفر. حاول مرة أخرى.");
+        //setErrorMessage("حدث خطأ في الاتصال بالسيرفر. حاول مرة أخرى.");
+        dispatch(signInFailure("حدث خطأ في الاتصال بالسيرفر. حاول مرة أخرى."));
     }
-    } finally {
-        setLoading(false);
     } 
 
   }
