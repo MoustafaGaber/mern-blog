@@ -3,7 +3,7 @@ import Home from './pages/Home'
 import About from './pages/About'
 import Dashboard from './pages/Dashboard'
 import Signin from './pages/SignIn'
-import Signup from './pages/SignUp'
+import SignUp from './pages/SignUp'
 import Header from './components/Header'
 import Projects from './pages/Projects'
 const App = () => {
@@ -16,7 +16,7 @@ const App = () => {
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/projects" element={<Projects />} />
       <Route path="/sign-in" element={<Signin />} />
-      <Route path="/sign-up" element={<Signup />} />
+      <Route path="/sign-up" element={<SignUp />} />
     </Routes>
   </BrowserRouter>
   )
