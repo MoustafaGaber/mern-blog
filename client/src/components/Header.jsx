@@ -1,11 +1,17 @@
-import { Button, Navbar, TextInput, NavbarCollapse,
-  NavbarLink, NavbarToggle} from "flowbite-react";
-import { Link,useLocation } from "react-router";
+import {
+  Button,
+  Navbar,
+  TextInput,
+  NavbarCollapse,
+  NavbarLink,
+  NavbarToggle,
+} from "flowbite-react";
+import { Link, useLocation } from "react-router";
 import { AiOutlineSearch } from "react-icons/ai";
 import { FaMoon } from "react-icons/fa";
 
 const Header = () => {
-    const path=useLocation().pathname
+  const path = useLocation().pathname;
   return (
     <Navbar className="border-b-2">
       <Link
@@ -14,7 +20,7 @@ const Header = () => {
       >
         <span className="px-2 py-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-lg text-white">
           Safi's
-        </span>
+        </span>{" "}
         Blog
       </Link>
       <form>
@@ -33,26 +39,20 @@ const Header = () => {
           <FaMoon />
         </Button>
         <Link to="/sign-in">
-          <Button
-            className="bg-gradient-to-r from-purple-500 to-blue-500 text-white hover:bg-gradient-to-l focus:ring-purple-200 dark:focus:ring-purple-800"
-            pill
-          >
-            Sign In
-          </Button>
+          <Button outline>Sign In</Button>
         </Link>
-       <NavbarToggle />
+        <NavbarToggle />
       </div>
       <NavbarCollapse>
-       <NavbarLink active={path==="/"} as="div"> 
-        <Link to="/">Home</Link>
-        </NavbarLink >
-        <NavbarLink active={path==="/about"} as="div">
-        <Link to="/about">About</Link>
+        <NavbarLink active={path === "/"} as="div">
+          <Link to="/">Home</Link>
         </NavbarLink>
-        <NavbarLink active={path==="/projects"} as="div">
-        <Link to="/projects">Projects</Link>
+        <NavbarLink active={path === "/about"} as="div">
+          <Link to="/about">About</Link>
         </NavbarLink>
-      
+        <NavbarLink active={path === "/projects"} as="div">
+          <Link to="/projects">Projects</Link>
+        </NavbarLink>
       </NavbarCollapse>
     </Navbar>
   );
