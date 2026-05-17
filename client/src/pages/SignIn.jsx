@@ -21,16 +21,17 @@ const SignIn= () => {
       return dispatch(signInFailure('Please fill out all fields.')); 
     }
     try {
+      console.log("البيانات اللي رايحة للسيرفر حالاً:", formData);
        dispatch(signInStart());
         const res=await api.post('/auth/signin', formData)
         
-        console.log(res.data);
+        console.log(res.data.data);
        
-       dispatch(signInSuccess(res.data));
+       dispatch(signInSuccess(res.data.data));
        navigate('/')
     } catch (error) {
      
-      console.log(error);
+      //console.log(error);
       
       if (error.response && error.response.data) {
         // error.response.data.message هي الرسالة اللي جاية من الـ Backend عندك
