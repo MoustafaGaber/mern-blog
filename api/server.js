@@ -14,8 +14,7 @@ app.use(express.json());
 //routers
 app.use("/api/users", userRoute);
 app.use("/api/auth", authRoute);
-//for testing
-app.get("/", (req, res) => res.send("Hello World!"));
+
 
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
