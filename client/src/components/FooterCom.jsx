@@ -63,7 +63,7 @@ const  FooterCom=()=> {
         <div className='w-full sm:flex sm:items-center sm:justify-between'>
           <FooterCopyright
             href='#'
-            by="Sahand's blog"
+            by="Safi's blog"
             year={new Date().getFullYear()}
           />
           <div className="flex gap-6 sm:mt-0 mt-4 sm:justify-center">
