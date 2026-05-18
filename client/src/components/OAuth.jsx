@@ -5,6 +5,7 @@ import { app } from '../firebase';
 import { useDispatch } from 'react-redux';
 import { signInSuccess } from '../redux/user/userSlice';
 import { useNavigate } from 'react-router';
+import api from "../lib/axios";
 
 export default function OAuth() {
   const auth = getAuth(app);
@@ -15,28 +16,45 @@ export default function OAuth() {
     provider.setCustomParameters({ prompt: 'select_account' });
     try {
       const resultsFromGoogle = await signInWithPopup(auth, provider);
-      const res = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/api/auth/google`,
-        {
-          method: 'POST',
-          credentials: 'include',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            name: resultsFromGoogle.user.displayName,
-            email: resultsFromGoogle.user.email,
-            googlePhotoUrl: resultsFromGoogle.user.photoURL,
-          }),
-        }
-      );
-      const data = await res.json();
-      if (res.ok) {
-        dispatch(signInSuccess(data));
-        navigate('/');
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+      console.log(resultsFromGoogle);
+      
+      // const res = await fetch(
+      //   `/api/auth/google`,
+      //   {
+      //     method: 'POST',
+      //     credentials: 'include',
+      //     headers: { 'Content-Type': 'application/json' },
+      //     body: JSON.stringify({
+      //       name: resultsFromGoogle.user.displayName,
+      //       email: resultsFromGoogle.user.email,
+      //       googlePhotoUrl: resultsFromGoogle.user.photoURL,
+      //     }),
+      //   }
+      // );
+
+  //     const data = await res.json();
+  //     if (res.ok) {
+  //       dispatch(signInSuccess(data));
+  //       navigate('/');
+  //     }
+     
+      const formData = {
+        name: resultsFromGoogle.user.displayName,
+        email: resultsFromGoogle.user.email,
+        googlePhotoUrl: resultsFromGoogle.user.photoURL,
+      };
+      console.log(formData);
+      
+  const res=await api.post('/auth/google', formData)
+  console.log(res.data.data);
+  dispatch(signInSuccess(res.data.data));
+       navigate('/')
+
+     } catch (error) {
+        console.log(error);
+     }
+   };
+  
   return (
     <Button
       type='button'

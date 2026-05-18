@@ -22,7 +22,7 @@ export const signIn = async (req, res, next) => {
     const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET);
     res
       .status(200)
-      .cookie("token", token, {
+      .cookie("access_token", token, {
         httpOnly: true,
       })
       .json({
@@ -60,6 +60,73 @@ export const signUp = async (req, res, next) => {
       datat: userWithoutPassword,
     });
   } catch (error) {
+    next(error);
+  }
+};
+
+// تأكد من مسار الموديل عندك
+
+export const google = async (req, res, next) => {
+  const { email, name, googlePhotoUrl } = req.body;
+  console.log( req.body);
+
+  try {
+    let user = await User.findOne({ email });
+
+    // 1. لو المستخدم مش موجود.. هننشأ حساب جديد فوراً
+    if (!user) {
+      const generatedPassword =
+        Math.random().toString(36).slice(-8) +
+        Math.random().toString(36).slice(-8);
+        
+      const hashedPassword = bcrypt.hashSync(generatedPassword, 10);
+      
+      // تأمين تنظيف اليوزر نيم من أي مسافات زائدة
+      const cleanUsername = name.toLowerCase().split(' ').join('') + Math.random().toString(36).slice(-4);
+
+      user = new User({
+        username: cleanUsername,
+        email,
+        password: hashedPassword,
+        profilePicture: googlePhotoUrl,
+      });
+
+      // حفظ المستخدم الجديد في قاعدة البيانات
+      await user.save();
+    }
+
+    // 2. إنشاء الـ Token (شغال سلاسة للقديم وللجديد بعد الحفظ)
+    const token = jwt.sign(
+      { id: user._id, isAdmin: user.isAdmin },
+      process.env.JWT_SECRET
+    );
+
+    // 3. 👑 التعديل السحري: تحويل آمن لكائن جافا سكريبت لمنع إيرور الـ _doc
+    const userObject = user.toObject();
+    const { password, ...rest } = userObject;
+
+    // 4. إعدادات الـ Cookie الموحدة
+    const cookieOptions = {
+      httpOnly: true,
+    };
+
+    if (process.env.NODE_ENV === 'production') {
+      cookieOptions.sameSite = 'none';
+      cookieOptions.secure = true;
+    }
+
+    // 5. إرسال الرد النهائي الموحد للطرفين
+    return res
+      .status(200)
+      .cookie('access_token', token, cookieOptions)
+      .json({
+        success: true,
+        message: "User logged in successfully",
+        data: rest, 
+      });
+
+  } catch (error) {
+    console.error( error.message);
     next(error);
   }
 };
