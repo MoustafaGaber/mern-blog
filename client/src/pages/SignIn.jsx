@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router";
 import api from "../lib/axios";
 import { useDispatch, useSelector } from "react-redux";
 import { signInStart,signInSuccess,signInFailure } from "../redux/user/userSlice";
+import OAuth from "../components/OAuth";
 
 const SignIn= () => {
   const [formData, setFormData] = useState({});
@@ -97,7 +98,7 @@ const SignIn= () => {
                
              
             </Button>
-           
+           <OAuth/>
           </form>
           <div className='flex gap-2 text-sm mt-5'>
             <span>Dont Have  account?</span>
