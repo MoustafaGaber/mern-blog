@@ -1,3 +1,5 @@
 @import "tailwindcss";
+/* this fix themes in latest version of tailwind    */
+@variant dark (&:where(.dark, .dark *));
 @import "flowbite-react/plugin/tailwindcss";
 @source "../.flowbite-react/class-list.json";
